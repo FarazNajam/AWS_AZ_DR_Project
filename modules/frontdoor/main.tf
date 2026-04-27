@@ -1,42 +1,22 @@
-
-resource "azurerm_frontdoor" "fd" {
-  name                = var.fd_name
+resource "azurerm_cdn_frontdoor_profile" "fd_profile" {
+  name                = var.name
   resource_group_name = var.rg_name
+  sku_name            = "Standard_AzureFrontDoor"
+}
 
-  routing_rule {
-    name               = "exampleRoutingRule1"
-    accepted_protocols = ["Http", "Https"]
-    patterns_to_match  = ["/*"]
-    frontend_endpoints = ["exampleFrontendEndpoint1"]
-    forwarding_configuration {
-      forwarding_protocol = "MatchRequest"
-      backend_pool_name   = "exampleBackendBing"
-    }
-  }
+resource "azurerm_cdn_frontdoor_endpoint" "fd_endpoint" {
+  name                     = var.fd_endpoint
+  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.fd_profile.id
+}
 
-  backend_pool_load_balan cing {
-    name = "exampleLoadBalancingSettings1"
-  }
+resource "azurerm_cdn_frontdoor_origin_group" "fd_og" {
+  name                     = var.fd_og_name
+  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.fd_profile.id
+}
 
-  backend_pool_health_probe {
-    name = "exampleHealthProbeSetting1"
-  }
+resource "azurerm_cdn_frontdoor_origin" "fd_origin" {
+  name                          = var.fd_origin
+  cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.fd_og.id
 
-  backend_pool {
-    name = "exampleBackendBing"
-    backend {
-      host_header = "www.bing.com"
-      address     = "www.bing.com"
-      http_port   = 80
-      https_port  = 443
-    }
-
-    load_balancing_name = "exampleLoadBalancingSettings1"
-    health_probe_name   = "exampleHealthProbeSetting1"
-  }
-
-  frontend_endpoint {
-    name      = "exampleFrontendEndpoint1"
-    host_name = "example-FrontDoor.azurefd.net"
-  }
+  host_name = var.app_hostname
 }
