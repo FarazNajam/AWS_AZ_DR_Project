@@ -1,0 +1,34 @@
+User
+ │
+ ▼
+Front Door
+ │
+ ▼
+App Service
+ │
+ ├── Read Secrets
+ │      ▼
+ │   Key Vault
+ │
+ ├── Read Configuration
+ │      ▼
+ │   App Configuration
+ │
+ ├── Read/Write
+ │      ▼
+ │   Azure SQL
+ │
+ └── Upload/Download Files
+        ▼
+      Storage Account
+
+App Service
+      │
+      ▼
+Application Insights
+      │
+      ▼
+Log Analytics
+
+Future:
+Azure → AWS Recovery Data Flow
