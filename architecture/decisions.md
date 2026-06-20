@@ -8,7 +8,6 @@ Use Azure as the primary cloud platform and AWS as the disaster recovery platfor
 
 ### Reason
 
-* Demonstrates multi-cloud skills.
 * Avoids cloud provider dependency.
 * Supports disaster recovery objectives.
 
