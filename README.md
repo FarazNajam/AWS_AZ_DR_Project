@@ -1,188 +1,282 @@
-Azure Terraform Module Library
-Overview
+# Multi-Cloud Disaster Recovery Platform (Azure Primary / AWS Warm Standby)
 
-This repository contains reusable Terraform modules for deploying common Azure infrastructure components.
+## Overview
 
-The goal of this project is to provide a scalable, environment-agnostic Infrastructure as Code (IaC) framework that supports deployment of Azure resources using Terraform modules and for_each patterns.
+This project demonstrates the design, deployment, security assessment, and disaster recovery (DR) capabilities of a modern cloud-hosted application across Microsoft Azure and Amazon Web Services (AWS).
 
-The modules are designed to support deployments ranging from a single resource instance to multiple resources across different environments and subscriptions.
+The solution is designed using an **Active-Warm Standby** architecture:
 
-Features
-Modular Terraform design
-Reusable Azure resource modules
-Support for for_each deployments
-Scalable map(object) variable patterns
-Environment-agnostic deployments
-Dependency mapping between resources
-GitHub-friendly project structure
-Suitable for Dev, Test, UAT, and Production environments
-Current Modules
-Module	Purpose
-Resource Group	Deploy Azure Resource Groups
-Network	Deploy VNets and Subnets
-NSG	Deploy Network Security Groups
-Route Table	Deploy Azure Route Tables
-Public IP	Deploy Azure Public IP addresses
-App Service	Deploy App Service Plans and Web Apps
-Database	Deploy Azure SQL Servers and Databases
-Front Door	Deploy Azure Front Door Profiles, Endpoints, Origin Groups, Origins and Routes
-Storage Account	Deploy Azure Storage Accounts
-Key Vault	Deploy Azure Key Vaults
-App Configuration	Deploy Azure App Configuration Stores
-Log Analytics	Deploy Log Analytics Workspaces
-Service Bus	Deploy Service Bus Namespaces, Queues and Topics
-Managed Identity	Deploy User Assigned Managed Identities
-Azure Monitor Alerts	Deploy Metric and Activity Log Alerts
-Repository Structure
+* **Azure** serves as the primary production environment.
+* **AWS** serves as the warm standby disaster recovery environment.
+* Infrastructure is deployed and managed using **Terraform Infrastructure as Code (IaC)**.
+* The solution includes security, availability, monitoring, and disaster recovery considerations for every major component.
+
+The objective is not only to deploy infrastructure and applications, but also to evaluate the operational readiness of the platform through security reviews, resilience testing, and disaster recovery exercises.
+
+---
+
+## Project Goals
+
+### Infrastructure as Code
+
+* Deploy Azure infrastructure using Terraform modules.
+* Deploy AWS disaster recovery infrastructure using Terraform.
+* Maintain reusable, modular, and version-controlled infrastructure.
+
+### Disaster Recovery
+
+* Implement a multi-cloud DR strategy.
+* Use Azure as the active production environment.
+* Use AWS as a warm standby environment.
+* Define and validate Recovery Time Objectives (RTO) and Recovery Point Objectives (RPO).
+* Conduct DR drills and document outcomes.
+
+### Security
+
+Assess each component across multiple security domains including:
+
+* Identity and access management
+* Network security
+* Data protection
+* Monitoring and logging
+* Availability and resilience
+* Disaster recovery readiness
+
+### Operational Readiness
+
+* Implement monitoring and alerting.
+* Establish logging and observability.
+* Create operational runbooks.
+* Document recovery procedures and lessons learned.
+
+---
+
+## High-Level Architecture
+
+```text
+Users
+   │
+   ▼
+Azure Front Door
+   │
+   ▼
+Azure Application Services
+   │
+   ▼
+Azure Data Services
+   │
+   ▼
+Azure Monitoring & Logging
+```
+
+### Disaster Recovery Environment
+
+```text
+Azure Primary Environment
+           │
+           ▼
+Failure Detection Mechanism
+           │
+           ▼
+DR Decision / Trigger
+           │
+           ▼
+AWS Warm Standby Environment
+           │
+           ▼
+Traffic Redirection
+```
+
+The exact implementation of failure detection, validation, and failover triggering will evolve throughout the project and will be documented as the design matures.
+
+---
+
+## Core Components
+
+### Azure (Primary)
+
+Examples of services that may be used:
+
+* Resource Groups
+* Virtual Networks
+* Network Security Groups
+* Azure Front Door
+* App Service Plans
+* App Services
+* Azure SQL Database
+* Azure Key Vault
+* Azure App Configuration
+* Azure Storage Accounts
+* Azure Monitor
+* Application Insights
+* Service Bus
+* API Management
+
+### AWS (Warm Standby)
+
+Examples of services that may be used:
+
+* VPC
+* EC2
+* RDS
+* Route 53
+* CloudWatch
+* S3
+* IAM
+
+---
+
+## Security Assessment Framework
+
+Each component will be assessed using a common framework.
+
+### Identity
+
+Review:
+
+* RBAC assignments
+* Managed identities
+* Service principals
+* Least privilege principles
+
+### Networking
+
+Review:
+
+* Public exposure
+* Private endpoints
+* Network segmentation
+* Security groups and firewall rules
+
+### Data Protection
+
+Review:
+
+* Encryption at rest
+* Encryption in transit
+* Secret management
+* Backup protection
+
+### Monitoring & Logging
+
+Review:
+
+* Diagnostic settings
+* Centralized logging
+* Alerting configuration
+* Audit trails
+
+### Availability
+
+Review:
+
+* High availability capabilities
+* Redundancy options
+* Scaling options
+* Single points of failure
+
+### Disaster Recovery
+
+Review:
+
+* Recovery methods
+* Recovery dependencies
+* Recovery Time Objective (RTO)
+* Recovery Point Objective (RPO)
+* Failover procedures
+
+---
+
+## Project Phases
+
+### Phase 1 – Primary Environment Validation
+
+* Deploy Azure infrastructure
+* Deploy application workload
+* Validate application connectivity
+* Validate database connectivity
+
+### Phase 2 – Architecture and Security Assessment
+
+* Identify single points of failure
+* Assess security posture
+* Review monitoring and observability
+* Review backup and recovery capabilities
+
+### Phase 3 – Data Protection
+
+* Implement backup strategy
+* Validate restore procedures
+* Define RPO targets
+
+### Phase 4 – AWS Disaster Recovery Environment
+
+* Deploy warm standby infrastructure
+* Restore and synchronize data
+* Validate application readiness
+
+### Phase 5 – Monitoring and Alerting
+
+* Configure monitoring
+* Configure alerting
+* Establish operational visibility
+
+### Phase 6 – Failure Detection and DR Trigger Design
+
+* Design failure detection process
+* Design validation workflow
+* Define failover decision process
+
+### Phase 7 – Failover Implementation
+
+* Deploy or activate DR resources
+* Restore services as required
+* Redirect traffic
+* Validate application functionality
+
+### Phase 8 – Disaster Recovery Drills
+
+* Simulate production outages
+* Execute recovery procedures
+* Measure recovery performance
+
+### Phase 9 – Continuous Improvement
+
+* Document findings
+* Record achieved RTO/RPO
+* Identify gaps
+* Implement improvements
+
+---
+
+## Repository Structure
+
+```text
 .
-├── main.tf
-├── variables.tf
-├── terraform.tfvars
-├── modules
-│   ├── resource_group
-│   ├── network
-│   ├── app_service
-│   ├── database
-│   ├── frontdoor
-│   ├── storage_account
-│   ├── key_vault
-│   ├── app_config
-│   ├── log_analytics
-│   ├── service_bus
-│   ├── nsg
-│   ├── route_table
-│   ├── public_ip
-│   ├── managed_identity
-│   └── monitor_alerts
-Example Deployment
-Resource Group
-module "rg" {
-  source   = "./modules/resource_group"
+├── modules/
+├── environments/
+├── flask_app/
+├── diagrams/
+├── docs/
+├── runbooks/
+├── scripts/
+└── pipelines/
+```
 
-  rg_name  = "rg-prod-aue-01"
-  location = "Australia East"
+---
 
-  tags = {
-    environment = "prod"
-    managed_by  = "terraform"
-  }
-}
-Network
-module "network" {
-  source   = "./modules/network"
+## Success Criteria
 
-  rg_name  = module.rg.rg_name
-  location = module.rg.location
+The project will be considered successful when:
 
-  vnets    = var.vnets
-  subnets  = var.subnets
-}
+* Azure production infrastructure is fully operational.
+* AWS warm standby environment is available and recoverable.
+* Infrastructure can be recreated from Terraform.
+* Monitoring and alerting are operational.
+* Security assessments have been completed for all major components.
+* DR testing has been successfully performed.
+* RTO and RPO have been measured and documented.
+* Recovery procedures are repeatable and documented.
 
-Example variables:
-
-vnets = {
-  vnet_app = {
-    name          = "vnet-prod-aue-01"
-    address_space = ["10.0.0.0/16"]
-    dns_servers   = ["10.0.0.4","10.0.0.5"]
-  }
-}
-
-subnets = {
-  subnet_app = {
-    name              = "subnet-app"
-    address_prefixes  = ["10.0.1.0/24"]
-    vnet_key          = "vnet_app"
-  }
-}
-App Service
-module "app" {
-  source = "./modules/app_service"
-
-  rg_name      = module.rg.rg_name
-  location     = module.rg.location
-
-  app_services = var.app_services
-}
-
-Example variables:
-
-app_services = {
-  flask_app = {
-    app_service_plan_name = "asp-prod-aue-01"
-    app_service_name      = "app-prod-aue-01"
-  }
-}
-Database
-module "db" {
-  source = "./modules/database"
-
-  rg_name     = module.rg.rg_name
-  location    = module.rg.location
-
-  sqlservers  = var.sqlservers
-  sqldatabases = var.sqldatabases
-}
-Front Door
-module "frontdoor" {
-  source = "./modules/frontdoor"
-
-  rg_name      = module.rg.rg_name
-  fd_profile   = var.fd_profile
-  fd_endpoint  = var.fd_endpoint
-
-  app_hostname = module.app.default_hostnames
-
-  fd_og_name   = var.fd_og_name
-  fd_route     = var.fd_route
-}
-Design Principles
-Reusable Modules
-
-Modules should be reusable across:
-
-Development
-Test
-UAT
-Production
-
-without code changes.
-
-Map(Object) Pattern
-
-Modules are designed to use Terraform's map(object()) pattern to support deployment of multiple resources.
-
-Example:
-
-app_services = {
-  app1 = {...}
-  app2 = {...}
-  app3 = {...}
-}
-Resource Relationships
-
-Dependencies are modelled using key references.
-
-Examples:
-
-vnet_key
-server_key
-app_key
-
-This allows resources to reference one another without hardcoding Azure resource names.
-
-Future Enhancements
-Private Endpoints
-Application Gateway
-Azure Firewall
-Virtual Machines
-Bastion
-Recovery Services Vault
-Backup Policies
-Azure Kubernetes Service (AKS)
-Azure Container Apps
-Event Grid
-Event Hub
-Disclaimer
-
-This project is intended for learning, lab environments, and reusable deployment patterns. Review all configurations before using in production environments.
+```
+```
