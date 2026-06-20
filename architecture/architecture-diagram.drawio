@@ -1,0 +1,34 @@
+Users
+   │
+   ▼
+Azure Front Door
+   │
+   ▼
+Azure App Service
+   │
+   ▼
+Azure SQL Database
+
+Azure App Service
+   │
+   ├── Azure Key Vault
+   ├── Azure App Configuration
+   └── Azure Storage Account
+
+Azure Monitor
+Application Insights
+
+══════════════════════════════
+
+AWS Warm Standby Environment
+
+EC2 / App Platform
+Database Platform
+Object Storage
+
+══════════════════════════════
+
+Future:
+Health Monitoring
+Failover Decision Engine
+Traffic Redirection
